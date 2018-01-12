@@ -32,6 +32,6 @@ for (let i=0; i<boxes.length; i++) {
     console.log('adding click message listener for ' + box.id + ' div')
     box.addEventListener("click", (event) => {
         // console.log(event)
-        console.log(box.id + " clicked!")
+        // console.log(box.id + " clicked!")
     })
 }
