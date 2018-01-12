@@ -18,13 +18,20 @@ let box_mover = {
 
     }
 }
+
 let boxes = document.getElementsByClassName("box")
 let red = document.getElementById("red")
 let blue = document.getElementById("blue")
 
-console.log(red)
-console.log(blue)
-for (let i=0;i<boxes.length;i++) {
+
+
+// console.log(red)
+// console.log(blue)
+for (let i=0; i<boxes.length; i++) {
     let box = boxes.item(i)
-    box.addEventListener("click", (event) => {console.log(event); console.log(box.id + " clicked!")})
+    console.log('adding click message listener for ' + box.id + ' div')
+    box.addEventListener("click", (event) => {
+        // console.log(event)
+        console.log(box.id + " clicked!")
+    })
 }
