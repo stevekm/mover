@@ -12,14 +12,43 @@
 
         #blue {
             background-color: blue;
-            position: absolute;
+            /* position: absolute; */
             left: 100px;
         }
 
         #red {
             background-color: red;
-            position: absolute;
+            /* position: absolute; */
             left: 500px;
+        }
+
+        .gameboard{
+            display: grid;
+            grid-template-columns: 100px 100px;
+            grid-gap: 10px;
+        }
+
+        .gamebox {
+            background-color: #444;
+            border-radius: 5px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        #col1row1 {
+            background-color: blue;
+        }
+
+        #col2row1{
+            background-color: blue;
+        }
+
+        #col1row2{
+            background-color: blue;
+        }
+
+        #col2row2{
+            background-color: blue;
         }
     </style>
 </head>
@@ -27,7 +56,16 @@
 <div id="blue" class="box"></div>
 <div id="red" class="box"></div>
 
-<script src="movement.js"></script>
+<div id="board" class="gameboard">
+    <div id="col1row1" class="gamebox" class="col1" class="row1">col1row1</div>
+    <div id="col2row1" class="gamebox" class="col2" class="row1">col2row1</div>
+    <div id="col1row2" class="gamebox" class="col1" class="row2">col1row2</div>
+    <div id="col2row2" class="gamebox" class="col2" class="row2">col2row2</div>
+</div>
+
+<script src="util.js"></script>
 <script src="update.js"></script>
+<script src="game.js"></script>
+<!-- <script src="update_old.js"></script> -->
 </body>
 </html>

@@ -1,79 +1,60 @@
-// ~~~~~~~~~~~~~~
-// FUNCTIONS
-// ~~~~~~~~~~~~~~
-function set_color(element, color){
-    // set the background-color of an element
-    element.style['background-color'] = color;
-}
+function cycle_cols(obj){
+    let old_col = obj.current;
+    let new_col = obj.colors.shift();
+    set_color(obj.element, new_col);
+    obj.current = new_col;
+    obj.colors.push(old_col);
+    // console.log('color was: ' + old_col);
+    // console.log('color is: ' + obj.current);
+};
 
-function update_color(div_obj){
-    // swap colors on the object
-    console.log('udpating color for ' + div_obj.id)
-    new_color = div_obj.new;
-    old_color = div_obj.old;
-    set_color(div_obj.element, new_color);
-    div_obj.new = old_color;
-    div_obj.old = new_color;
-}
+function cycle_all_cols(obj_list){
+    // cycles the color on all objects in the list
+    let num_objs = obj_list.length;
+    for (let i = 0; i < num_objs; i++) {
+        let obj = obj_list[i];
+        cycle_cols(obj = obj);
+    };
+};
 
-function make_div_obj(id, new_color, linked_id){
-    // get an element and make a dictionary with color information
-    obj = {
+function make_div_obj(id, colors, linked_ids){
+    // get an element and make a dictionary with color information and linked objects
+    // id = str, id of the div to get
+    // colors = array of str color names
+    // linked_ids = array of str id's of other divs to link with
+    let obj = {
         id: id,
         element : document.getElementById(id),
         og: window.getComputedStyle(document.getElementById(id))['background-color'],
-        old: window.getComputedStyle(document.getElementById(id))['background-color'],
-        new: new_color,
-        linked_id: linked_id
+        current: window.getComputedStyle(document.getElementById(id))['background-color'],
+        colors: colors,
+        linked_ids: linked_ids
     };
     return(obj);
-}
+};
 
-function find_linked_obj(div_obj, obj_list){
-    // get the object from the obj_list that should be updated with the div_obj
-    linked_id = div_obj['linked_id'];
-
-    num_objs = obj_list.length;
+function find_div_obj_by_id(id, obj_list){
+    // search the obj_list for a div_obj with the matching id
+    let num_objs = obj_list.length;
     for (let i = 0; i < num_objs; i++) {
-        obj = obj_list[i]
-        if(obj['id'] === linked_id){
-            console.log('found linked obj: ' + obj['id']);
-            return(obj);
-        }
-    }
-    console.log('didnt find a matching linked_obj in the obj_list');
-    // return(); // ?? What to do here???
-}
+        let obj = obj_list[i];
+        if(obj['id'] === id){
+            return(obj)
+        };
+    };
+    // console.log('didnt find a matching linked_obj in the obj_list for id: ' + id);
+    // return() // ?? What to do here???
+};
 
+function get_linked_objs(div_obj, obj_list){
+    // searches the obj_list object list for all div_obj objects that have a matching linked_id
+    let matches = [];
 
-// ~~~~~~~~~~~~~~
-// SETUP
-// ~~~~~~~~~~~~~~
-
-
-// list of objects to contain div metadata
-let boxes_list = [
-    make_div_obj(id = 'red', new_color = 'blue', linked_id = 'blue'),
-    make_div_obj(id = 'blue', new_color = 'red', linked_id = 'red')
-];
-num_boxes = boxes_list.length;
-
-
-// ~~~~~~~~~~~~~~
-// RUN
-// ~~~~~~~~~~~~~~
-
-// add event listener to update all objects on click
-for (let i = 0; i < num_boxes; i++) {
-    let box_obj = boxes_list[i];
-
-    console.log('adding click action listener for ' + box_obj.id + ' div');
-
-    // on click, update the div color, and the color of the assocaited div
-    box_obj.element.addEventListener("click", (event) => {
-        console.log(box_obj.id + ' was clicked');
-        update_color(box_obj);
-        let linked_obj = find_linked_obj(div_obj = box_obj, obj_list = boxes_list);
-        update_color(linked_obj)
-    })
-}
+    // find the matching objects in the list for each linked id
+    for (let i = 0; i < div_obj['linked_ids'].length; i++) {
+        let linked_id = div_obj['linked_ids'][i];
+        let linked_objs = find_div_obj_by_id(id = linked_id, obj_list = obj_list);
+        matches.push(linked_objs);
+    };
+    return(matches);
+};
