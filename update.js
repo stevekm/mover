@@ -10,6 +10,7 @@ function cycle_cols(obj){
 
 function cycle_all_cols(obj_list){
     // cycles the color on all objects in the list
+    console.log("updating colors")
     let num_objs = obj_list.length;
     for (let i = 0; i < num_objs; i++) {
         let obj = obj_list[i];
@@ -57,4 +58,15 @@ function get_linked_objs(div_obj, obj_list){
         matches.push(linked_objs);
     };
     return(matches);
+};
+
+function get_current_cols(obj_list){
+    // return an array of the current colors for all the objects in the list
+    let current_colors = [];
+    for (let i = 0; i < obj_list.length; i++) {
+        let obj = obj_list[i]
+        let col = obj.current
+        current_colors.push(col)
+    };
+    return(current_colors);
 };

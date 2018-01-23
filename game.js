@@ -1,11 +1,117 @@
-gameboxes = [
-    make_div_obj(id = 'col1row1', colors = ['red'], linked_ids = ['col2row2']),
-    make_div_obj(id = 'col2row1', colors = ['red'], linked_ids = ['col1row1']),
-    make_div_obj(id = 'col1row2', colors = ['red'], linked_ids = ['col2row1']),
-    make_div_obj(id = 'col2row2', colors = ['red'], linked_ids = ['col1row2'])
-];
-num_boxes = gameboxes.length;
+// ~~~~~~~~~ FUNCTIONS ~~~~~~~~~~ //
+function set_color(element, color){
+    // set the background-color of an element
+    element.style['background-color'] = color;
+};
 
+function identical(array){
+    for(let i = 0; i < array.length - 1; i++){
+        if(array[i] !== array[i + 1]){
+            return(false)
+        };
+    };
+    return(true)
+};
+
+function cycle_cols(obj){
+    let old_col = obj.current;
+    let new_col = obj.colors.shift();
+    set_color(obj.element, new_col);
+    obj.current = new_col;
+    obj.colors.push(old_col);
+};
+
+function cycle_all_cols(obj_list){
+    // cycles the color on all objects in the list
+    console.log("updating colors")
+    let num_objs = obj_list.length;
+    for (let i = 0; i < num_objs; i++) {
+        let obj = obj_list[i];
+        cycle_cols(obj = obj);
+    };
+};
+
+function make_div_obj(id, colors, linked_ids){
+    // get an element and make a dictionary with color information and linked objects
+    // id = str, id of the div to get
+    // colors = array of str color names
+    // linked_ids = array of str id's of other divs to link with
+    let obj = {
+        id: id,
+        element : document.getElementById(id),
+        og: window.getComputedStyle(document.getElementById(id))['background-color'],
+        current: window.getComputedStyle(document.getElementById(id))['background-color'],
+        colors: colors,
+        linked_ids: linked_ids
+    };
+    return(obj);
+};
+
+function find_div_obj_by_id(id, obj_list){
+    // search the obj_list for a div_obj with the matching id
+    let num_objs = obj_list.length;
+    for (let i = 0; i < num_objs; i++) {
+        let obj = obj_list[i];
+        if(obj['id'] === id){
+            return(obj)
+        };
+    };
+    // console.log('didnt find a matching linked_obj in the obj_list for id: ' + id);
+    // return() // ?? What to do here???
+};
+
+function get_linked_objs(div_obj, obj_list){
+    // searches the obj_list object list for all div_obj objects that have a matching linked_id
+    let matches = [];
+
+    // find the matching objects in the list for each linked id
+    for (let i = 0; i < div_obj['linked_ids'].length; i++) {
+        let linked_id = div_obj['linked_ids'][i];
+        let linked_objs = find_div_obj_by_id(id = linked_id, obj_list = obj_list);
+        matches.push(linked_objs);
+    };
+    return(matches);
+};
+
+function get_current_cols(obj_list){
+    // return an array of the current colors for all the objects in the list
+    let current_colors = [];
+    for (let i = 0; i < obj_list.length; i++) {
+        let obj = obj_list[i]
+        let col = obj.current
+        current_colors.push(col)
+    };
+    return(current_colors);
+};
+
+function check_win(gameboxes){
+    // checks the state of the game board to see if the play won
+    console.log('checking gameboard');
+    let current_colors = get_current_cols(gameboxes);
+    current_colors.push(win_color.code);
+    let colors_identical = identical(current_colors);
+    if (colors_identical === true){
+        console.log("you win");
+        alert("you win");
+    };
+};
+
+
+
+
+
+
+// ~~~~~~~~~ SETUP ~~~~~~~~~~ //
+let win_color = {name: 'red', code: "rgb(255, 0, 0)"}
+
+// colored boxes in the game board to be linked together; make objects to hold state data
+gameboxes = [
+    make_div_obj(id = 'col1row1', colors = ['rgb(255, 0, 0)'], linked_ids = ['col2row2']),
+    make_div_obj(id = 'col2row1', colors = ['rgb(255, 0, 0)'], linked_ids = ['col1row1']),
+    make_div_obj(id = 'col1row2', colors = ['rgb(255, 0, 0)'], linked_ids = ['col2row1']),
+    make_div_obj(id = 'col2row2', colors = ['rgb(255, 0, 0)'], linked_ids = ['col1row2'])
+];
+let num_boxes = gameboxes.length;
 
 // add event listener to update all objects on click
 for (let i = 0; i < num_boxes; i++) {
@@ -16,10 +122,17 @@ for (let i = 0; i < num_boxes; i++) {
     // on click, update the div color, and the color of the assocaited div
     box_obj.element.addEventListener("click", (event) => {
         console.log(box_obj.id + ' was clicked');
+        let current_colors = get_current_cols(gameboxes);
+        console.log('current colors:');
+        console.log(current_colors);
+
         cycle_cols(box_obj);
         let linked_objs = get_linked_objs(div_obj = box_obj, obj_list = gameboxes);
-        // console.log('linked objs are: ');
-        // console.log(linked_objs);
         cycle_all_cols(linked_objs);
+
+        current_colors = get_current_cols(gameboxes);
+        console.log('new colors:');
+        console.log(current_colors);
+        check_win(gameboxes = gameboxes);
     });
 };
