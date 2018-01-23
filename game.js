@@ -27,7 +27,7 @@ function cycle_all_cols(obj_list){
     let num_objs = obj_list.length;
     for (let i = 0; i < num_objs; i++) {
         let obj = obj_list[i];
-        cycle_cols(obj = obj);
+        cycle_cols(obj);
     };
 };
 
@@ -67,7 +67,7 @@ function get_linked_objs(div_obj, obj_list){
     // find the matching objects in the list for each linked id
     for (let i = 0; i < div_obj['linked_ids'].length; i++) {
         let linked_id = div_obj['linked_ids'][i];
-        let linked_objs = find_div_obj_by_id(id = linked_id, obj_list = obj_list);
+        let linked_objs = find_div_obj_by_id(linked_id, obj_list);
         matches.push(linked_objs);
     };
     return(matches);
@@ -92,11 +92,18 @@ function check_win(gameboxes){
     let colors_identical = identical(current_colors);
     if (colors_identical === true){
         console.log("you win");
-        alert("you win");
+        // alert("you win");
+        display_win();
     };
 };
 
-
+function display_win(){
+    // print a win statement to the page
+    var element = document.createElement("h1");
+    var para = document.createTextNode('you win!');
+    element.appendChild(para);
+    document.getElementsByTagName('body')[0].appendChild(element);
+};
 
 
 
@@ -106,10 +113,10 @@ let win_color = {name: 'red', code: "rgb(255, 0, 0)"}
 
 // colored boxes in the game board to be linked together; make objects to hold state data
 gameboxes = [
-    make_div_obj(id = 'col1row1', colors = ['rgb(255, 0, 0)'], linked_ids = ['col2row2']),
-    make_div_obj(id = 'col2row1', colors = ['rgb(255, 0, 0)'], linked_ids = ['col1row1']),
-    make_div_obj(id = 'col1row2', colors = ['rgb(255, 0, 0)'], linked_ids = ['col2row1']),
-    make_div_obj(id = 'col2row2', colors = ['rgb(255, 0, 0)'], linked_ids = ['col1row2'])
+    make_div_obj('col1row1', ['rgb(255, 0, 0)'], ['col2row2']),
+    make_div_obj('col2row1', ['rgb(255, 0, 0)'], ['col1row1']),
+    make_div_obj('col1row2', ['rgb(255, 0, 0)'], ['col2row1']),
+    make_div_obj('col2row2', ['rgb(255, 0, 0)'], ['col1row2'])
 ];
 let num_boxes = gameboxes.length;
 
@@ -127,12 +134,12 @@ for (let i = 0; i < num_boxes; i++) {
         console.log(current_colors);
 
         cycle_cols(box_obj);
-        let linked_objs = get_linked_objs(div_obj = box_obj, obj_list = gameboxes);
+        let linked_objs = get_linked_objs(box_obj, gameboxes);
         cycle_all_cols(linked_objs);
 
         current_colors = get_current_cols(gameboxes);
         console.log('new colors:');
         console.log(current_colors);
-        check_win(gameboxes = gameboxes);
+        check_win(gameboxes);
     });
 };
